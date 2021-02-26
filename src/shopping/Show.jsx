@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import { Row, Col, Button, Table } from 'react-bootstrap';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
@@ -178,7 +178,7 @@ const  Show = (props)=>{
                <Button 
                     variant="warning"
                     className="btn-block p-4 font-weight-bold text-light "
-                    onClick={()=>sendStatusNumber(2)}
+                    onClick={()=>sendStatusNumber(1)}
                     style={font}
                   >
                   <FontAwesomeIcon icon={faUtensils } />&nbsp;

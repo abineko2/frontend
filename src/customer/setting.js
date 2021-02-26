@@ -53,3 +53,11 @@ export const pushDeleteButtonTolocalData = (name,orderNumber,datas)=>{
   });
   
 }
+/* カートの時間のチェック*/
+export const cartValidate = (datas)=>{
+  let check = true;
+  datas.map((data)=>{
+    data.time == "" ? check = false : check = true;
+  })
+  return check;
+}

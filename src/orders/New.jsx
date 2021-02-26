@@ -46,6 +46,7 @@ const  New = (props)=>{
             localStorage.setItem('orders', JSON.stringify(res.data));
             let action = ordersSend(res.data);
             props.dispatch(action);
+            props.history.push('/orders')
             
         })
         .catch((error)=>{

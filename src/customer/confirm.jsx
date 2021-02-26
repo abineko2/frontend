@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart, faFish, faYenSign, faCalculator, faUtensils, faCashRegister } from "@fortawesome/free-solid-svg-icons";
 import { cartDeleteCart, sendLoginData, ordersSend} from '../store/Store';
 import Empty from './NoData';
-import { localstorageChange } from './setting';
+import { localstorageChange, cartValidate } from './setting';
 
 const title={
   fontFamily: 'ヒラギノ明朝',
@@ -45,6 +45,8 @@ const[state, setState] = useState(props.orderData); /* 全体の在庫*/
 const[num, setNumber] = useState(cartNum());  /* 現在の注文数ステータス */
 
 
+
+
 /***************************** セレクトの数量表示 ************************************************************** */
 const selectNumber =(number)=>{
   let array = [];
@@ -55,8 +57,9 @@ const selectNumber =(number)=>{
 }
 /***********************サーバー送信注文確定***************************************************************** */
 const sendServer = ()=>{
+    alert(JSON.stringify(props.buyCarts));
     let result = window.confirm('注文を確定してよろしいですか？');
-    if(result){
+    if(result && cartValidate(props.buyCarts)){  /*カートの受取時間もチェック(現時点空の場合のみ)*/
       const params = new FormData();
     params.append('email', props.userData[0].email);
     params.append('name', props.userData[0].name);
@@ -101,6 +104,9 @@ const sendServer = ()=>{
     props.history.push('/customor');  /*ユーザーページへ移動*/
     props.dispatch(cartEmpty());  /*買い物カゴリセット*/
 
+    }
+    else if(!cartValidate(props.buyCarts)){
+      alert('時間を入力してください。');
     }
     
   }
@@ -213,6 +219,7 @@ const doSelect = (e)=>{
        </div>
        <Row>
         <Col md={{ span: 8, offset: 2 }} className="pt-3 pl-5 pr-5 pb-4 bg-light shadow">
+         
           {props.buyCarts.length >0? 
           <Form>
            <Table bordered className="mt-3">

@@ -144,6 +144,8 @@ const timeChange = (e)=>{
                      <input 
                         type="time" 
                         value={state.time}  
+                        min="10:00" max="19:00"
+                        required
                         className="form-control"
                         onChange={timeChange}
                      />

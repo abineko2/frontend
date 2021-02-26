@@ -6,7 +6,7 @@ import './users.css';
 import { connect } from 'react-redux';
 import {historyDataSend} from '../store/Store';
 import { customers } from './setting';
-
+import { circularLoading }  from '@yami-beta/react-circular-loading';
 
 const userLink ={
   border: 'none',
@@ -22,11 +22,20 @@ const buttonWidth={
   marginRight:'5%'
 }
 
+//プログレスステータス
+const CircularLoading = circularLoading({
+  num: 6,
+  distance: 1,
+  dotSize: 0.5,
+
+});
+
 
  function PhoneIndex(props){
   const[state,setState] = useState({
     data: localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : []
   })
+  const[progress, setProgress] = useState(false)
   /*************APIによるuser一覧**********************************/
    /*async function userCall(){
      
@@ -66,6 +75,24 @@ const buttonWidth={
     
     }
    }
+   /****************************ページ更新**************************************** */
+   const updateUsers = ()=>{
+    setProgress(true)
+    axios
+    .get('https://uematsu-backend.herokuapp.com/users')
+    .then((res)=>{
+        localStorage.setItem('users', JSON.stringify(res.data));
+        let updateData = localStorage.getItem('users')
+        setState({
+          data: updateData? updateData : []
+        })
+        setProgress(false)
+    })
+    .catch((error)=>{
+        console.log(error);
+    })       
+   } 
+
    const userShowaccess = (id)=>{
     axios
     .get(`https://uematsu-backend.herokuapp.com/history/show/${id}`)
@@ -82,9 +109,28 @@ const buttonWidth={
  
   return(
     <div className="w-100">
-      <div className="text-center mt-2 mb-4">
+      <div className="text-center mt-1 mb-1">
         <h2 data-testid="usertitle">会員一覧</h2>
       </div>
+      {/* プログレス */}
+     
+      {progress ===true? 
+            <div id="progress" className=" pl-2 pr-2  bg-white shodow">
+              <p　className="mt-3 font-weight-bold">しばらくお待ちください。</p>
+              <div className="text-center">
+              <CircularLoading />
+              </div>
+            </div>
+          : 
+          ''
+      }
+
+      <Button　
+        variant="primary"
+        className="mb-2"
+        onClick={updateUsers}
+      >更新</Button>
+
       <div class="bg-white"></div>
       <div className="w-100 bg-white">
           {state.data.length > 0 ?

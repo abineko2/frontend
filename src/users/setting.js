@@ -134,11 +134,14 @@ export const customerOrders = (allData)=>{
 
 export const customers =(users)=>{
   let customerUsers = [];
-  users.forEach((user)=>{
-    if(!(user.admin === true)){
-      customerUsers.push(user);
-    }
-  });
+  if(users.length > 0){
+    users.forEach((user)=>{
+      if(!(user.admin === true)){
+        customerUsers.push(user);
+      }
+    });
+  }
+
   return customerUsers;
 }
 /*お客様注文確認ページにて合計金額計算 */
@@ -163,3 +166,7 @@ export const statusView = (status)=>{
       break;
   }
 }
+ /****************************ページ更新**************************************** */
+ export const updateUsers = ()=>{
+  alert('sample')
+} 

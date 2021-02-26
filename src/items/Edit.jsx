@@ -69,7 +69,6 @@ useState(loginUserCheck());
        ).then((res)=>{
            console.log(res.data);
        }).catch(()=>{
-         alert('ERROR');
        })
 
        /* rails側への送信*/ 
@@ -83,6 +82,18 @@ useState(loginUserCheck());
       .then(function (response) {
         /*railsからメッセージ*/
         alert(response.data.message); 
+        /* 商品一覧更新*/
+        axios
+          .get('https://uematsu-backend.herokuapp.com/items')
+          .then((res)=>{
+            localStorage.removeItem('items');
+            setState(res.data);
+            localStorage.setItem('items', JSON.stringify(res.data));
+            props.history.push('/items')
+          })
+          .catch((error)=>{
+            console.log(error);
+          })
         setState({
           name: '',
           price: '',
@@ -92,7 +103,6 @@ useState(loginUserCheck());
         props.history.push('/items');
       })
       .catch(function(){
-        alert('error');
       })
       setShow({display: 'none'});
     }

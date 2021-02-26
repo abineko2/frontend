@@ -9,6 +9,8 @@
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "@yami-beta/react-circular-loading": "^3.0.0",
+    "@yami_beta/react-circular-loading": "^2.0.0",
     "axios": "^0.21.0",
     "bootstrap": "^4.5.3",
     "build": "^0.1.4",
@@ -26,6 +28,7 @@
     "react-select": "^3.1.1",
     "recharts": "^2.0.4",
     "redux": "^4.0.5",
+    "styled-components": "^5.2.1",
     "web-vitals": "^0.2.4",
     "yarn": "^1.22.10"
   },

@@ -90,6 +90,10 @@ const buttonWidth={
     
     }
   }
+  /****************************ページ更新**************************************** */
+  const updateItems = ()=>{
+    alert('items');
+   } 
   /*****************************加工ページ********************************************* */
   const processItem = (item)=>{
     props.processItem(item);
@@ -110,7 +114,12 @@ const buttonWidth={
       <div className="text-center mt-5 mb-4">
         <h2 data-testid="itemstitle">商品一覧</h2>
       </div>
-      <div class="bg-white p-2"></div>
+      <Button　
+        variant="primary"
+        className="mb-2"
+        onClick={updateItems}
+      >更新</Button>
+<div class="bg-white p-2"></div>
       <div className="bg-white w-100">
           <Button 
             className="mb-1"

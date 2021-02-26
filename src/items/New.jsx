@@ -74,6 +74,20 @@ const  New = (props)=>{
       }
       axios.post('https://uematsu-backend.herokuapp.com/items', data)
       .then(function (response) {
+
+        /* 商品一覧更新*/
+        axios
+          .get('https://uematsu-backend.herokuapp.com/items')
+          .then((res)=>{
+            localStorage.removeItem('items');
+            setState(res.data);
+            localStorage.setItem('items', JSON.stringify(res.data));
+            props.history.push('/items')
+          })
+          .catch((error)=>{
+            console.log(error);
+          })
+
         /*railsからメッセージ*/
         alert(response.data.message); 
         setState({
