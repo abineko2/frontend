@@ -3,6 +3,9 @@ import { Row, Col, Table, Button,Modal, Image } from 'react-bootstrap';
 import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { circularLoading }  from '@yami-beta/react-circular-loading';
+import MyPagination from './MyPagination';
+
 
 const itemLink ={
   border: 'none',
@@ -25,13 +28,24 @@ const buttonWidth={
   width: '31%'
 }
 
+//プログレスステータス
+const CircularLoading = circularLoading({
+  num: 6,
+  distance: 1,
+  dotSize: 0.5,
+
+});
+
+
 
  function PcIndex(props){
-  let localData = JSON.parse(localStorage.getItem('items'))
-  let modalData = [];
-
 
   /************************ステート*************************************** */
+  const[page, setPage] = useState(0);
+
+  let localData = JSON.parse(localStorage.getItem('items')).slice(page * 2, page * 2 + 2 )
+  let modalData = [];
+
   const[itemData, setState] = useState(
     localData ? localData : []
   )
@@ -40,6 +54,7 @@ const buttonWidth={
     status: false,
     data: []
   });
+  const[progress, setProgress] = useState(false)
 
   const handleClose = () => setShow({status: false, data: show.data});
   
@@ -92,7 +107,19 @@ const buttonWidth={
   }
   /****************************ページ更新**************************************** */
   const updateItems = ()=>{
-    alert('items');
+    setProgress(true)
+      axios
+      .get('https://uematsu-backend.herokuapp.com/items')
+      .then((res)=>{
+          localStorage.removeItem('items');
+          localStorage.setItem('items', JSON.stringify(res.data));
+          let newData = JSON.parse(localStorage.getItem('items'));
+          setState(newData? newData : []);
+          setProgress(false)
+      })
+      .catch((error)=>{
+        console.log(error);
+      })
    } 
   /*****************************加工ページ********************************************* */
   const processItem = (item)=>{
@@ -109,16 +136,42 @@ const buttonWidth={
       data: modalData
     })
   }
+   /********************************ページネーション処理**************************************** */
+   const paginationNo = (num)=>{
+    setState(
+      JSON.parse(localStorage.getItem('items')).slice(num * 2, num * 2 + 2 )
+    )
+    setPage(num);
+  }
   return(
     <div className="w-100">
       <div className="text-center mt-5 mb-4">
         <h2 data-testid="itemstitle">商品一覧</h2>
       </div>
+      {/* プログレス */}
+     
+      {progress ===true? 
+        <div id="progress" className=" pl-2 pr-2  bg-white shodow">
+          <p　className="mt-3 font-weight-bold">しばらくお待ちください。</p>
+          <div className="text-center">
+          <CircularLoading />
+          </div>
+        </div>
+        : 
+        ''
+        }
       <Button　
         variant="primary"
         className="mb-2"
         onClick={updateItems}
       >更新</Button>
+      
+      {itemData.length >0?
+        <MyPagination No={page} paginationSend ={(num)=>paginationNo(num)} />
+        :
+        ""
+             
+      }
 <div class="bg-white p-2"></div>
       <div className="bg-white w-100">
           <Button 

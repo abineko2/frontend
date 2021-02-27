@@ -166,7 +166,4 @@ export const statusView = (status)=>{
       break;
   }
 }
- /****************************ページ更新**************************************** */
- export const updateUsers = ()=>{
-  alert('sample')
-} 
+ 

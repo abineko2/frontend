@@ -4,6 +4,7 @@ import axios from 'axios';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import MyPagination from './MyPagination';
+import { circularLoading }  from '@yami-beta/react-circular-loading';
 
 const itemLink ={
   border: 'none',
@@ -28,6 +29,14 @@ const paginationStyle = {
   border: "none"
 }
 
+//プログレスステータス
+const CircularLoading = circularLoading({
+  num: 6,
+  distance: 1,
+  dotSize: 0.5,
+
+});
+
  function PcIndex(props){
 
   /************************ステート*************************************** */
@@ -44,6 +53,7 @@ const paginationStyle = {
     status: false,
     data: []
   });
+  const[progress, setProgress] = useState(false)
 
   const handleClose = () => setShow({status: false, data: show.data});
   
@@ -103,7 +113,19 @@ const paginationStyle = {
   }
     /****************************ページ更新**************************************** */
     const updateItems = ()=>{
-      alert('items');
+      setProgress(true)
+      axios
+      .get('https://uematsu-backend.herokuapp.com/items')
+      .then((res)=>{
+          localStorage.removeItem('items');
+          localStorage.setItem('items', JSON.stringify(res.data));
+          let newData = JSON.parse(localStorage.getItem('items')).slice(page * 2, page * 2 + 2 );
+          setState(newData? newData : []);
+          setProgress(false)
+      })
+      .catch((error)=>{
+        console.log(error);
+      })
      } 
   /*****************************モーダル開く********************************************** */
   const openModal = (item)=>{
@@ -129,6 +151,18 @@ const paginationStyle = {
       </div>
       <Row>
         <Col md={{ span: 8, offset: 2 }} className="p-3 bg-light shadow">
+          {/* プログレス */}
+     
+          {progress ===true? 
+            <div id="progress" className=" pl-2 pr-2  bg-white shodow">
+              <p　className="mt-3 font-weight-bold">しばらくお待ちください。</p>
+              <div className="text-center">
+              <CircularLoading />
+              </div>
+            </div>
+          : 
+          ''
+          }
           <Button 
             variant="primary"
             onClick={updateItems}

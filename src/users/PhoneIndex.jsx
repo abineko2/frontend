@@ -7,6 +7,7 @@ import { connect } from 'react-redux';
 import {historyDataSend} from '../store/Store';
 import { customers } from './setting';
 import { circularLoading }  from '@yami-beta/react-circular-loading';
+import UserPagination from './UserPagination';
 
 const userLink ={
   border: 'none',
@@ -32,8 +33,11 @@ const CircularLoading = circularLoading({
 
 
  function PhoneIndex(props){
+  const[page, setPage] = useState(0);
+  let localBaseData = JSON.parse(localStorage.getItem('users'))
+  let localData = localBaseData == null? "" : localBaseData.slice(page * 2, page * 2 + 4 )
   const[state,setState] = useState({
-    data: localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : []
+     data: localData? localData : []
   })
   const[progress, setProgress] = useState(false)
   /*************APIによるuser一覧**********************************/
@@ -106,10 +110,28 @@ const CircularLoading = circularLoading({
     })
      props.history.push('/users_phone_empshow');
    }
+   /********************************ページネーション(通常ボタン)処理**************************************** */
+  const paginationNo = (num)=>{
+    switch (num) {
+      case 0:
+        setState({
+          data: JSON.parse(localStorage.getItem('users')).slice(num * 2, num * 2 +4)
+        })
+       
+        break;
+      default:
+        setState({
+          data: JSON.parse(localStorage.getItem('users')).slice(num * 2 + 2, (num * 2 + 2) + 2 )
+        })
+        break;
+    }
+    setPage(num);
+  }
+ 
  
   return(
     <div className="w-100">
-      <div className="text-center mt-1 mb-1">
+      <div className="text-center mt-3 mb-1">
         <h2 data-testid="usertitle">会員一覧</h2>
       </div>
       {/* プログレス */}
@@ -124,12 +146,17 @@ const CircularLoading = circularLoading({
           : 
           ''
       }
-
+     
       <Button　
         variant="primary"
-        className="mb-2"
+        className="mb-3"
         onClick={updateUsers}
       >更新</Button>
+
+        <UserPagination 
+          No={page} 
+          paginationSend={(num)=>paginationNo(num)} 
+        />
 
       <div class="bg-white"></div>
       <div className="w-100 bg-white">
